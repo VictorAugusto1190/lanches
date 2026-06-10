@@ -6,6 +6,9 @@ const comidas = document.querySelector(".comidas");
 const totalCarrinho = document.querySelector("#total-carrinho");
 const botaoFinalizar = document.querySelector(".finalizar");
 
+// Elemento de seleção de região integrado
+const selectRegiao = document.querySelector("#select-regiao");
+
 // Elementos do Modal de Observação
 const modalObs = document.querySelector("#modal-obs");
 const campoObs = document.querySelector("#campo-obs");
@@ -27,7 +30,6 @@ let produtoTemporario = null;
 // ==========================================
 // CONFIGURAÇÃO DA SUA CHAVE PIX ESTÁTICA
 // ==========================================
-// Substitua o texto abaixo pela sua chave real (pode ser celular, CPF, e-mail ou chave aleatória)
 const MINHA_CHAVE_PIX = "74ddb5bc-4f78-4ce3-ac1f-d00ecf882051"; 
 
 // Lanches e porções
@@ -35,7 +37,7 @@ const produtos = [
   {
     id: 1,
     nome: "Mini X-Burguer",
-    preco: 19.00,
+    preco: 18.00,
     descricao: "Pão egg sponge, hambúrguer artesanal, mussarela e molho rose. Acompanha 4 batatas smile."
   },
   {
@@ -118,23 +120,30 @@ carrinho.addEventListener("click", () => {
   } 
 });
 
-// Função para calcular e atualizar o valor total no H2
+// Função modificada para calcular e atualizar o valor total com a taxa de entrega
 function atualizarTotal() {
   const precosElementos = itens.querySelectorAll(".pedidos h4:last-child");
-  let total = 0;
+  let subtotal = 0;
 
   precosElementos.forEach(elemento => {
     const precoTexto = elemento.textContent.replace("R$", "").trim();
     const precoNumero = parseFloat(precoTexto);
     
     if (!isNaN(precoNumero)) {
-      total += precoNumero;
+      subtotal += precoNumero;
     }
   });
 
-  totalCarrinho.textContent = `Total: R$ ${total.toFixed(2)}`;
-  return total.toFixed(2);
+  // Captura a taxa de entrega selecionada (se for vazio, considera 0 para o cálculo inicial)
+  const taxaEntrega = parseFloat(selectRegiao.value) || 0;
+  const totalComTaxa = subtotal + taxaEntrega;
+
+  totalCarrinho.textContent = `Total: R$ ${totalComTaxa.toFixed(2)}`;
+  return totalComTaxa.toFixed(2);
 }
+
+// Recalcular o total sempre que o usuário alterar a região de entrega
+selectRegiao.addEventListener("change", atualizarTotal);
 
 // Remover pedido do carrinho
 itens.addEventListener("click", (e) => {
@@ -249,21 +258,27 @@ modalObs.addEventListener("click", (e) => {
 });
 
 // =================================================================
-// NOVO FLUXO: PROCESSO DO MODAL PIX ESTÁTICO (100% FRONT-END)
+// PROCESSO DO MODAL PIX ESTÁTICO COM TRAVA DE SEGURANÇA POR REGIÃO
 // =================================================================
 botaoFinalizar.addEventListener("click", () => {
   const itensCarrinho = itens.querySelectorAll(".item");
 
+  // 1. Validação se o carrinho possui algum item
   if (itensCarrinho.length === 0) {
     alert("Seu carrinho está vazio! Adicione pelo menos um item.");
     return;
   }
 
-  // Captura o valor total atualizado do carrinho
-  const totalTexto = totalCarrinho.textContent.replace("Total: R$", "").trim();
-  const valorTotalNumerico = parseFloat(totalTexto);
+  // 2. Trava de segurança: Bloqueia a finalização se a região estiver vazia
+  if (selectRegiao.value === "") {
+    alert("Por favor, selecione a sua Região de Entrega antes de finalizar o pedido!");
+    selectRegiao.focus();
+    return;
+  }
 
-  // Oculta a imagem do QR Code antigo/carregamento para focar na chave Copia e Cola
+  // Captura o valor total atualizado do carrinho (que já inclui a taxa calculada)
+  const valorTotalNumerico = parseFloat(atualizarTotal());
+
   if (imgQrCode) {
     imgQrCode.style.display = "none";
     const containerQr = document.querySelector(".qr-code-container");
@@ -277,7 +292,6 @@ botaoFinalizar.addEventListener("click", () => {
   textoPixCopia.value = MINHA_CHAVE_PIX;
   btnCopiarPix.innerHTML = "📋 Copiar Chave Pix";
 
-  // Altera os textos de orientação dentro do Modal do Pix
   document.querySelector(".pix-sub").textContent = "Copie a chave Pix abaixo para fazer o pagamento no aplicativo do seu banco:";
   
   const statusContainer = document.querySelector(".status-pagamento");
@@ -286,10 +300,8 @@ botaoFinalizar.addEventListener("click", () => {
     <span>Faça a transferência e envia o comprovante.</span>
   `;
 
-  // Altera o comportamento do botão "Cancelar" para servir como fechamento simples
   btnCancelarPix.textContent = "Voltar ao Carrinho";
 
-  // Cria dinamicamente o botão de confirmação manual ("Já paguei") se ele ainda não existir
   let btnConfirmar = document.querySelector("#btn-confirmar-pagamento");
   if (!btnConfirmar) {
     btnConfirmar = document.createElement("button");
@@ -299,15 +311,12 @@ botaoFinalizar.addEventListener("click", () => {
     btnConfirmar.style.marginTop = "12px";
     btnConfirmar.textContent = "🟢 ENVIAR COMPROVANTE";
     
-    // Insere o botão logo acima do botão de cancelar
     btnCancelarPix.parentNode.insertBefore(btnConfirmar, btnCancelarPix);
   }
 
-  // Limpa ouvintes antigos duplicados clonando o botão
   const novoBtnConfirmar = btnConfirmar.cloneNode(true);
   btnConfirmar.parentNode.replaceChild(novoBtnConfirmar, btnConfirmar);
 
-  // Ação ao clicar em confirmar o Pix realizado
   novoBtnConfirmar.addEventListener("click", () => {
     novoBtnConfirmar.textContent = "Enviando Pedido...";
     novoBtnConfirmar.disabled = true;
@@ -316,13 +325,12 @@ botaoFinalizar.addEventListener("click", () => {
 
     setTimeout(() => {
       modalPix.style.display = "none";
-      enviarPedidoWhatsApp(); // Redireciona para o WhatsApp
+      enviarPedidoWhatsApp(); 
       novoBtnConfirmar.textContent = "🟢 Já realizei o Pagamento";
       novoBtnConfirmar.disabled = false;
     }, 1500);
   });
 
-  // Abre o painel do Pix na tela
   modalPix.style.display = "flex";
 });
 
@@ -343,9 +351,22 @@ btnCancelarPix.addEventListener("click", () => {
   modalPix.style.display = "none";
 });
 
-// Envio estruturado de informações direto para o WhatsApp do Dono
+// Envio estruturado de informações direto para o WhatsApp do Dono (com relatório de taxas)
 function enviarPedidoWhatsApp() {
   const itensCarrinho = itens.querySelectorAll(".item");
+  
+  // Coleta as informações textuais da região escolhida
+  const opcaoSelecionada = selectRegiao.options[selectRegiao.selectedIndex];
+  const nomeRegiao = opcaoSelecionada.getAttribute("data-nome");
+  const valorTaxa = parseFloat(opcaoSelecionada.value);
+
+  // Calcula exclusivamente a soma dos produtos para o relatório
+  let valorProdutos = 0;
+  itensCarrinho.forEach(item => {
+    const precoTexto = item.querySelector(".pedidos h4:last-child").textContent.replace("R$", "").trim();
+    valorProdutos += parseFloat(precoTexto);
+  });
+
   let mensagem = "🍔 *Novo Pedido - ENVIADO PELO SITE!* 🍔\n\n";
   mensagem += "=========================\n";
 
@@ -360,8 +381,12 @@ function enviarPedidoWhatsApp() {
     mensagem += "-------------------------\n";
   });
 
-  mensagem += `\n💰 *${totalCarrinho.textContent}*`;
-  mensagem += `\n🟩 *PAGAMENTO: Informado como Realizado via Pix pelo cliente.*`;
+  // Relatório de valores estruturado conforme solicitado
+  mensagem += `\n📍 *Região de Entrega:* ${nomeRegiao}`;
+  mensagem += `\n💵 *Valor do Pedido:* R$ ${valorProdutos.toFixed(2)}`;
+  mensagem += `\n🛵 *Taxa da Região:* R$ ${valorTaxa.toFixed(2)}`;
+  mensagem += `\n💰 *Total (Pedido + Valor):* R$ ${(valorProdutos + valorTaxa).toFixed(2)}`;
+  mensagem += `\n\n🟩 *PAGAMENTO: Informado como Realizado via Pix pelo cliente.*`;
 
   const numeroTelefone = "5519996894181";
   const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${encodeURIComponent(mensagem)}`;

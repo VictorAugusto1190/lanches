@@ -36,6 +36,18 @@
 
     <div id="itens"></div>
 
+    <div class="campo-regiao">
+      <label for="select-regiao">📍 Selecione a Região de Entrega:</label>
+      <select id="select-regiao">
+        <option value="" disabled selected>-- Escolha sua Região --</option>
+        <option value="0" data-nome="Retirar no Balcão">Retirar no estabelecimento (R$ 0,00)</option>
+        <option value="5" data-nome="Serra Italiana">Serra Italiana (R$ 5,00)</option>
+        <option value="15" data-nome="Ninho Verde">Ninho Verde (R$ 15,00)</option>
+        <option value="10" data-nome="Maristela">Maristela (R$ 10,00)</option>
+        <option value="15" data-nome="Pardinho">Pardinho (R$ 15,00)</option>
+      </select>
+    </div>
+
     <h2 id="total-carrinho">Total: R$ 0.00</h2>
 
     <button class="finalizar">
