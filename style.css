@@ -521,12 +521,14 @@ main {
   .modal-botoes {
     flex-direction: column; /* Botões ficam um embaixo do outro no celular */
     gap: 10px;
+    height:90px ;
   }
 
   .modal-botoes button {
     width: 100%;
-    height: 48px; /* Botões mais altos, padrão de aplicativos mobile */
+    height: 45px; /* Botões mais altos, padrão de aplicativos mobile */
   }
+
 }
 
 /* --- CELULARES PEQUENOS (Telas até 480px) --- */
@@ -538,6 +540,7 @@ main {
   .ini {
     font-size: 0.85rem;
   }
+  
 }
 
 /* ==========================================
