@@ -12,8 +12,23 @@ const campoObs = document.querySelector("#campo-obs");
 const btnSemObs = document.querySelector("#btn-sem-obs");
 const btnComObs = document.querySelector("#btn-com-obs");
 
+// Elementos do Modal do Pix
+const modalPix = document.querySelector("#modal-pix");
+const imgQrCode = document.querySelector("#img-qrcode");
+const valorPixModal = document.querySelector("#valor-pix-modal");
+const textoPixCopia = document.querySelector("#texto-pix-copia");
+const btnCopiarPix = document.querySelector("#btn-copiar-pix");
+const avisoCopiado = document.querySelector("#aviso-copiado");
+const btnCancelarPix = document.querySelector("#btn-cancelar-pix");
+
 // Variável temporária para armazenar o produto selecionado
 let produtoTemporario = null;
+
+// ==========================================
+// CONFIGURAÇÃO DA SUA CHAVE PIX ESTÁTICA
+// ==========================================
+// Substitua o texto abaixo pela sua chave real (pode ser celular, CPF, e-mail ou chave aleatória)
+const MINHA_CHAVE_PIX = "74ddb5bc-4f78-4ce3-ac1f-d00ecf882051"; 
 
 // Lanches e porções
 const produtos = [
@@ -145,14 +160,11 @@ function adicionarProdutoNaSecaoComida() {
       const produtoId = parseInt(e.target.getAttribute("data-id"));
       produtoTemporario = produtos.find(p => p.id === produtoId);
 
-      // Bloqueia se o botão já estiver animando o sucesso
       if (e.target.classList.contains("add-sucesso")) return;
 
       if (produtoTemporario) {
-        campoObs.value = ""; // Reseta o campo de texto
-        modalObs.style.display = "flex"; // Abre o modal
-        
-        // Atribui o botão diretamente a uma propriedade do elemento modal
+        campoObs.value = ""; 
+        modalObs.style.display = "flex"; 
         modalObs.targetButton = e.target;
       }
     }
@@ -165,9 +177,8 @@ function fecharModal() {
   produtoTemporario = null;
 }
 
-// Função para gerenciar os feedbacks visuais de sucesso com escopo isolado
+// Função para gerenciar os feedbacks visuais de sucesso
 function dispararAnimacoesSucesso(botaoDoMomento) {
-  // 1. Faz o ícone do carrinho pulsar no header
   const iconeCarrinho = document.querySelector("#carrinho");
   iconeCarrinho.classList.add("animar-carrinho");
   
@@ -175,13 +186,11 @@ function dispararAnimacoesSucesso(botaoDoMomento) {
     iconeCarrinho.classList.remove("animar-carrinho");
   }, 500);
 
-  // 2. Transforma o botão específico em um check verde temporário
   if (botaoDoMomento) {
     const textoOriginal = "ADD"; 
     botaoDoMomento.textContent = "✓"; 
     botaoDoMomento.classList.add("add-sucesso");
 
-    // O cronômetro agora prende a referência exata deste botão individual
     setTimeout(() => {
       botaoDoMomento.textContent = textoOriginal;
       botaoDoMomento.classList.remove("add-sucesso");
@@ -213,14 +222,13 @@ function inserirNoCarrinho(textoObservacao) {
   
   atualizarTotal();
   
-  // Resgata o botão que abriu este fluxo e passa para a animação dedicada
   const botaoParaAnimar = modalObs.targetButton;
   dispararAnimacoesSucesso(botaoParaAnimar); 
   
   fecharModal();
 }
 
-// --- CONFIGURAÇÃO DOS BOTÕES DO MODAL ---
+// CONFIGURAÇÃO DOS BOTÕES DO MODAL DE OBSERVAÇÃO
 btnSemObs.addEventListener("click", () => {
   inserirNoCarrinho("Sem observações");
 });
@@ -234,14 +242,15 @@ btnComObs.addEventListener("click", () => {
   }
 });
 
-// Fecha se clicar fora da caixinha branca
 modalObs.addEventListener("click", (e) => {
   if (e.target === modalObs) {
     fecharModal();
   }
 });
 
-// --- ENVIAR PEDIDO PARA O WHATSAPP ---
+// =================================================================
+// NOVO FLUXO: PROCESSO DO MODAL PIX ESTÁTICO (100% FRONT-END)
+// =================================================================
 botaoFinalizar.addEventListener("click", () => {
   const itensCarrinho = itens.querySelectorAll(".item");
 
@@ -250,7 +259,94 @@ botaoFinalizar.addEventListener("click", () => {
     return;
   }
 
-  let mensagem = "🍔 *Novo Pedido!* 🍔\n\n";
+  // Captura o valor total atualizado do carrinho
+  const totalTexto = totalCarrinho.textContent.replace("Total: R$", "").trim();
+  const valorTotalNumerico = parseFloat(totalTexto);
+
+  // Oculta a imagem do QR Code antigo/carregamento para focar na chave Copia e Cola
+  if (imgQrCode) {
+    imgQrCode.style.display = "none";
+    const containerQr = document.querySelector(".qr-code-container");
+    if (containerQr) {
+      containerQr.innerHTML = "<p style='color:#333; font-weight:600; padding:10px;'>Utilize a Chave Pix abaixo</p>";
+    }
+  }
+
+  // Alimenta o modal com as informações reais
+  valorPixModal.textContent = `R$ ${valorTotalNumerico.toFixed(2)}`;
+  textoPixCopia.value = MINHA_CHAVE_PIX;
+  btnCopiarPix.innerHTML = "📋 Copiar Chave Pix";
+
+  // Altera os textos de orientação dentro do Modal do Pix
+  document.querySelector(".pix-sub").textContent = "Copie a chave Pix abaixo para fazer o pagamento no aplicativo do seu banco:";
+  
+  const statusContainer = document.querySelector(".status-pagamento");
+  statusContainer.innerHTML = `
+    <div class="spinner"></div>
+    <span>Faça a transferência e envia o comprovante.</span>
+  `;
+
+  // Altera o comportamento do botão "Cancelar" para servir como fechamento simples
+  btnCancelarPix.textContent = "Voltar ao Carrinho";
+
+  // Cria dinamicamente o botão de confirmação manual ("Já paguei") se ele ainda não existir
+  let btnConfirmar = document.querySelector("#btn-confirmar-pagamento");
+  if (!btnConfirmar) {
+    btnConfirmar = document.createElement("button");
+    btnConfirmar.id = "btn-confirmar-pagamento";
+    btnConfirmar.className = "btn-pix-acao";
+    btnConfirmar.style.backgroundColor = "#27ae60";
+    btnConfirmar.style.marginTop = "12px";
+    btnConfirmar.textContent = "🟢 ENVIAR COMPROVANTE";
+    
+    // Insere o botão logo acima do botão de cancelar
+    btnCancelarPix.parentNode.insertBefore(btnConfirmar, btnCancelarPix);
+  }
+
+  // Limpa ouvintes antigos duplicados clonando o botão
+  const novoBtnConfirmar = btnConfirmar.cloneNode(true);
+  btnConfirmar.parentNode.replaceChild(novoBtnConfirmar, btnConfirmar);
+
+  // Ação ao clicar em confirmar o Pix realizado
+  novoBtnConfirmar.addEventListener("click", () => {
+    novoBtnConfirmar.textContent = "Enviando Pedido...";
+    novoBtnConfirmar.disabled = true;
+
+    statusContainer.innerHTML = "✅ <span style='color: #2ecc71; font-weight:bold;'>PEDIDO CONFIRMADO! REDIRECIONANDO...</span>";
+
+    setTimeout(() => {
+      modalPix.style.display = "none";
+      enviarPedidoWhatsApp(); // Redireciona para o WhatsApp
+      novoBtnConfirmar.textContent = "🟢 Já realizei o Pagamento";
+      novoBtnConfirmar.disabled = false;
+    }, 1500);
+  });
+
+  // Abre o painel do Pix na tela
+  modalPix.style.display = "flex";
+});
+
+// Ação de copiar o texto da chave Pix
+btnCopiarPix.addEventListener("click", () => {
+  textoPixCopia.select();
+  textoPixCopia.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(textoPixCopia.value);
+
+  avisoCopiado.style.display = "block";
+  setTimeout(() => {
+    avisoCopiado.style.display = "none";
+  }, 2000);
+});
+
+// Ação de fechar o Modal do Pix e voltar
+btnCancelarPix.addEventListener("click", () => {
+  modalPix.style.display = "none";
+});
+
+// Envio estruturado de informações direto para o WhatsApp do Dono
+function enviarPedidoWhatsApp() {
+  const itensCarrinho = itens.querySelectorAll(".item");
+  let mensagem = "🍔 *Novo Pedido - ENVIADO PELO SITE!* 🍔\n\n";
   mensagem += "=========================\n";
 
   itensCarrinho.forEach((item) => {
@@ -264,14 +360,13 @@ botaoFinalizar.addEventListener("click", () => {
     mensagem += "-------------------------\n";
   });
 
-  const valorTotal = totalCarrinho.textContent;
-  mensagem += `\n💰 *${valorTotal}*`;
+  mensagem += `\n💰 *${totalCarrinho.textContent}*`;
+  mensagem += `\n🟩 *PAGAMENTO: Informado como Realizado via Pix pelo cliente.*`;
 
   const numeroTelefone = "5519996894181";
-  const mensagemFormatada = encodeURIComponent(mensagem);
-  const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${mensagemFormatada}`;
+  const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${encodeURIComponent(mensagem)}`;
   window.open(linkWhatsapp, "_blank");
-});
+}
 
 // Inicializa o app
 adicionarProdutoNaSecaoComida();

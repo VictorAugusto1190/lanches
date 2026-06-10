@@ -14,7 +14,7 @@
     <h3>BURGUERS MASTER</h3>
 
     <section class="whatCompra">
-      <a id="whatsapp" href="https://wa.me/5514997615693" target="_blank">
+      <a id="whatsapp" href="https://wa.me/5519996894181" target="_blank">
         <img class="whatsapp" src="img/whatsapp.png" alt="WhatsApp">
       </a>
 
@@ -58,6 +58,33 @@
         <button id="btn-sem-obs">Sem Observação</button>
         <button id="btn-com-obs">Adicionar</button>
       </div>
+    </div>
+  </div>
+
+  <div id="modal-pix" class="modal" style="display: none;">
+    <div class="modal-conteudo pix-box">
+      <h3>Pagamento via Pix</h3>
+      <p class="pix-sub">Escaneie o QR Code ou copie o código abaixo para pagar:</p>
+      
+      <div class="qr-code-container">
+        <img id="img-qrcode" src="" alt="Carregando QR Code...">
+      </div>
+      
+      <div class="valor-pix-destaque">
+        Total: <span id="valor-pix-modal">R$ 0,00</span>
+      </div>
+
+      <textarea id="texto-pix-copia" readonly style="position: absolute; left: -9999px;"></textarea>
+      
+      <button id="btn-copiar-pix" class="btn-pix-acao">📋 Copiar Código Pix</button>
+      <div id="aviso-copiado" style="display: none; color: #2ecc71; font-weight: bold; margin-top: 8px; font-size: 0.9rem;">Código copiado com sucesso!</div>
+
+      <div class="status-pagamento">
+        <div class="spinner"></div>
+        <span>Aguardando aprovação do banco...</span>
+      </div>
+      
+      <button id="btn-cancelar-pix" class="btn-pix-cancelar">Cancelar Pedido</button>
     </div>
   </div>
 
