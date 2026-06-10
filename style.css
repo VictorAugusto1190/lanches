@@ -1,0 +1,567 @@
+/* ==========================================
+   1. CONFIGURAÇÕES GERAIS & FONTES
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --cor-primaria: #ff9f43;       /* Laranja/Dourado Burger Premium */
+  --cor-primaria-hover: #ee5253; 
+  --cor-verde-whatsapp: #2ecc71;
+  --cor-fundo: #f8f9fa;          
+  --cor-card: #ffffff;           
+  --cor-texto: #2d3436;
+  --cor-subtexto: #636e72;
+  --borda-raio: 15px;            
+  --sombra: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), 
+              url('https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1965&auto=format&fit=crop') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================
+   2. CABEÇALHO (HEADER)
+   ========================================== */
+header {
+  display: flex;
+  height: 80px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 0 30px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 900;
+}
+
+header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #d35400;
+  letter-spacing: 1px;
+}
+
+.ini {
+  text-decoration: none;
+  color: var(--cor-texto);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.ini:hover {
+  color: #d35400;
+}
+
+.whatCompra {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.whatCompra a {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.whatCompra a:hover {
+  transform: scale(1.1);
+}
+
+.whatsapp, .btnX {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.mpd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f1f2f6;
+}
+
+.btnxx {
+  background: none;
+  border: none; 
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.btnxx:hover {
+  transform: scale(1.1);
+}
+
+/* ==========================================
+   3. ÁREA PRINCIPAL (MAIN / VITRINE)
+   ========================================== */
+main {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 100px; 
+  padding: 20px;
+  width: 100%;
+}
+
+.osDois {
+  background-color: var(--cor-card);
+  border-radius: var(--borda-raio);
+  border: none;
+  width: 100%;
+  max-width: 550px;
+  height: calc(100vh - 140px);
+  padding: 25px;
+  overflow-y: auto;
+  box-shadow: var(--sombra);
+}
+
+.comidas {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.produto {
+  background-color: var(--cor-fundo);
+  border-radius: 8px;
+  padding: 15px;
+  border: 1px solid #edf2f7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.produto h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--cor-texto);
+}
+
+.produto p {
+  font-size: 0.85rem;
+  color: var(--cor-subtexto);
+  line-height: 1.4;
+}
+
+.produto span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #d35400;
+  margin-top: 5px;
+}
+
+.add {
+  background-color: #d35400;
+  color: white;
+  border: none;
+  width: 70px;  
+  height: 32px; 
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add:hover {
+  background-color: #b33939;
+}
+
+/* ==========================================
+   4. CARRINHO LATERAL (LISTA)
+   ========================================== */
+.lista {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 380px;
+  height: 100vh;
+  background-color: var(--cor-card);
+  border-left: 1px solid #dfe6e9;
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+  padding: 30px 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.lista h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
+#itens {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin: 15px 0;
+  padding-right: 5px;
+}
+
+#itens::-webkit-scrollbar, 
+.osDois::-webkit-scrollbar {
+  width: 5px;
+}
+#itens::-webkit-scrollbar-thumb, 
+.osDois::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* ==========================================
+   5. ITENS INTERNOS DO CARRINHO & OBSERVAÇÕES
+   ========================================== */
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pedidos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.pedidos h4:first-child {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.pedidos h4:last-child {
+  color: #d35400;
+  font-weight: 600;
+}
+
+.ob {
+  background-color: var(--cor-fundo);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid #b2bec3;
+}
+
+.ob p:first-child {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--cor-subtexto);
+}
+
+.ob p:last-child {
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.remover {
+  background-color: #e53935;
+  width: 100%;
+  height: auto; 
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin-top: 5px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remover:hover {
+  background-color: #c62828;
+}
+
+.linha {
+  width: 100%;
+  border: none;
+  border-top: 1px dashed #cbd5e1;
+  margin: 12px 0;
+}
+
+/* ==========================================
+   6. TELA DE FECHAMENTO (TOTAL E FINALIZAR)
+   ========================================== */
+#total-carrinho {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--cor-texto);
+  text-align: right;
+  margin-bottom: 15px;
+  padding-top: 10px;
+  border-top: 2px dashed #dfe6e9;
+}
+
+.lista .finalizar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px; 
+  background-color: var(--cor-verde-whatsapp);
+  color: white;
+  border: none;
+  border-radius: var(--borda-raio);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2);
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.lista .finalizar:hover {
+  background-color: #27ae60;
+}
+
+.lista .finalizar:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================
+   7. MODAL DE OBSERVAÇÃO PERSONALIZADO
+   ========================================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); 
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000; 
+}
+
+.modal-conteudo {
+  background-color: var(--cor-card);
+  padding: 30px;
+  border-radius: var(--borda-raio);
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  animation: abrirModal 0.3s ease-out;
+}
+
+@keyframes abrirModal {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-conteudo h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--cor-texto);
+}
+
+.modal-conteudo p {
+  font-size: 0.85rem;
+  color: var(--cor-subtexto);
+  margin-bottom: 15px;
+}
+
+#campo-obs {
+  width: 100%;
+  height: 100px;
+  border: 1px solid #dfe6e9;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.9rem;
+  resize: none; 
+  outline: none;
+  margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+
+#campo-obs:focus {
+  border-color: var(--cor-primaria);
+}
+
+.modal-botoes {
+  display: flex;
+  gap: 15px;
+}
+
+.modal-botoes button {
+  flex: 1;
+  height: 45px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#btn-sem-obs {
+  background-color: #f1f2f6;
+  color: var(--cor-texto);
+}
+
+#btn-sem-obs:hover {
+  background-color: #e4e7eb;
+}
+
+#btn-com-obs {
+  background-color: #d35400;
+  color: white;
+}
+
+#btn-com-obs:hover {
+  background-color: #b33939;
+}
+
+/* ==========================================
+   8. RESPONSIVIDADE (MOBILE & TABLET)
+   ========================================== */
+
+/* --- TABLETS (Telas até 992px) --- */
+@media (max-width: 992px) {
+  main {
+    margin-top: 90px;
+    padding: 15px;
+  }
+
+  .osDois {
+    max-width: 700px; /* Alarga um pouco a vitrine para aproveitar o espaço do tablet */
+    height: calc(100vh - 130px);
+  }
+
+  .lista {
+    max-width: 340px; /* Carrinho lateral um pouco mais enxuto */
+  }
+}
+
+/* --- CELULARES (Telas até 768px) --- */
+@media (max-width: 768px) {
+  header {
+    padding: 0 15px; /* Diminui o espaçamento interno do topo */
+  }
+
+  header h3 {
+    font-size: 1.1rem; /* Diminui o título para não quebrar linha no celular */
+  }
+
+  .whatCompra {
+    gap: 15px; /* Aproxima os ícones do WhatsApp e Carrinho */
+  }
+
+  .whatsapp, .btnX {
+    width: 35px;
+    height: 35px; /* Ícones ligeiramente menores e mais fáceis de tocar */
+  }
+
+  main {
+    margin-top: 90px;
+    padding: 10px;
+  }
+
+  .osDois {
+    max-width: 100%; /* A vitrine ocupa toda a largura disponível do celular */
+    height: calc(100vh - 120px);
+    padding: 15px;
+  }
+
+  .produto span {
+    font-size: 1rem;
+  }
+
+  .add {
+    width: 65px;
+    height: 35px; /* Botão ADD ligeiramente maior para facilitar o clique com o dedo */
+  }
+
+  /* O Carrinho no celular vira uma tela cheia para ficar profissional */
+  
+  .lista {
+    width: 100%;
+    max-width: 100%; 
+    border-left: none;
+    padding: 20px 15px;
+  }
+
+  .lista h1 {
+    font-size: 1.2rem;
+  }
+
+  /* Ajustes do Modal de Observação para dedões */
+  .modal-conteudo {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .modal-botoes {
+    flex-direction: column; /* Botões ficam um embaixo do outro no celular */
+    gap: 10px;
+  }
+
+  .modal-botoes button {
+    width: 100%;
+    height: 48px; /* Botões mais altos, padrão de aplicativos mobile */
+  }
+}
+
+/* --- CELULARES PEQUENOS (Telas até 480px) --- */
+@media (max-width: 480px) {
+  header h3 {
+    font-size: 0.95rem; /* Evita que o nome da hamburgueria empurre os ícones */
+  }
+  
+  .ini {
+    font-size: 0.85rem;
+  }
+}
+
+/* ==========================================
+   9. ANIMAÇÕES DE FEEDBACK VISUAL
+   ========================================== */
+
+/* Animação que faz o carrinho pulsar e brilhar */
+.animar-carrinho {
+  animation: pulsarCarrinho 0.5s ease-in-out;
+}
+
+@keyframes pulsarCarrinho {
+  0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(46, 204, 113, 0)); }
+  50% { transform: scale(1.3); filter: drop-shadow(0 0 12px #2ecc71); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(46, 204, 113, 0)); }
+}
+
+/* Estado de sucesso do botão ADD - Corrigido e Centralizado */
+.add-sucesso {
+  background-color: var(--cor-verde-whatsapp) !important;
+  color: white !important;
+  font-size: 1.1rem !important; /* Deixa o V legível */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background-color 0.2s ease;
+}

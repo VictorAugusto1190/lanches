@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MARTINS BURGUER</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <a class="ini" href="#">INICIO</a>
+
+    <h3>BURGUERS MASTER</h3>
+
+    <section class="whatCompra">
+      <a id="whatsapp" href="https://wa.me/5514997615693" target="_blank">
+        <img class="whatsapp" src="img/whatsapp.png" alt="WhatsApp">
+      </a>
+
+      <a id="carrinho">
+        <img
+          class="whatsapp"
+          src="img/carrinho-de-compras.png"
+          alt="Carrinho"
+        >
+      </a>
+    </section>
+  </header>
+
+  <div class="lista" style="display: none;">
+    <section class="mpd">
+      <h1>MEUS PEDIDOS</h1>
+      <button class="btnxx"><img class="btnX" id="x" src="img/botao-x.png" alt="Fechar"></button>
+    </section>
+
+    <div id="itens"></div>
+
+    <h2 id="total-carrinho">Total: R$ 0.00</h2>
+
+    <button class="finalizar">
+      ENVIAR PEDIDO VIA WHATSAPP
+    </button>
+  </div>
+
+  <main>
+    <section id="lanches" class="comidas osDois"></section>
+  </main>
+
+  <div id="modal-obs" class="modal" style="display: none;">
+    <div class="modal-conteudo">
+      <h3>Deseja adicionar alguma observação?</h3>
+      <p>Ex: Sem cebola, molho à parte, ponto da carne, etc.</p>
+      
+      <textarea id="campo-obs" placeholder="Digite sua observação aqui..."></textarea>
+      
+      <div class="modal-botoes">
+        <button id="btn-sem-obs">Sem Observação</button>
+        <button id="btn-com-obs">Adicionar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
